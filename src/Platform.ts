@@ -37,5 +37,3 @@ declare interface Window {
 
 
 
-
-
