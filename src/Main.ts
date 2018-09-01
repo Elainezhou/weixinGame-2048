@@ -99,7 +99,7 @@ class Main extends egret.DisplayObjectContainer {
         // this.addChild(sky);
         let stageW = this.stage.stageWidth;
         let stageH = this.stage.stageHeight;
-        console.log(stageW,stageH);
+        // console.log(stageW,stageH);
         // sky.width = stageW;
         // sky.height = stageH;
         this.drawBg();
