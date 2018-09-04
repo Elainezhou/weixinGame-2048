@@ -20,11 +20,8 @@ class Game extends egret.DisplayObjectContainer{
     private _two_probability = 0.8;
     private _addGridAmount = 2;
     private _gridsDisplayContainer = new egret.DisplayObjectContainer();
-    // private _gridInfo = {
-    //     2:{
-
-    //     }
-    // }
+    private startX = undefined;
+    private startY = undefined;
     private _gridInfo = {
         2:{
             "num": 2,
@@ -117,6 +114,11 @@ class Game extends egret.DisplayObjectContainer{
         this.addGrids();
         this.drawGrids();
         this.addChild(this._gridsDisplayContainer);
+        this.touchEnabled = true;
+        this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onTouchBegin, this)
+        this.addEventListener(egret.TouchEvent.TOUCH_END, this.onTouchEnd, this)
+
+
     }
     private addMainBg(){
         let mainBg: egret.Shape = new egret.Shape()
@@ -217,6 +219,54 @@ class Game extends egret.DisplayObjectContainer{
 
         this._gridsDisplayContainer.addChild(cell)
 
+    }
+
+    private onTouchBegin(event){
+        //console.log(event)
+        this.startX = event.stageX;
+        this.startY = event.stageY;
+
+    }
+
+    private onTouchEnd(event){
+        // console.log(event)
+        let endX = event.stageX;
+        let endY = event.stageY;
+        let diffX = endX - this.startX;
+        let diffY = endY - this.startY;
+        // console.log(endX,endY,this.startX,this.startY,diffX,diffY);
+        switch(true){
+            case Math.abs(diffX)>Math.abs(diffY)&&diffX>20 :
+                console.log('right');
+                break;
+            case Math.abs(diffX)>Math.abs(diffY)&&diffX<-20 :
+                console.log('left');
+                break;
+            case Math.abs(diffX)<Math.abs(diffY)&&diffY>20 :
+                console.log('down');
+                break;
+            case Math.abs(diffX)<Math.abs(diffY)&&diffY<-20 :
+                console.log('up');
+                break; 
+            default:
+                break;            
+        }
+        // if(Math.abs(diffX)>Math.abs(diffY)){
+        //     if(diffX>20){
+        //         console.log('right')
+        //     }
+        //     if(diffX<-20){
+        //         console.log('left')
+        //     }
+        // }
+        // if(Math.abs(diffX)<Math.abs(diffY)){
+        //     if(diffY>20){
+        //         console.log('down')
+        //     }
+        //     if(diffY<-20){
+        //         console.log('up')
+        //     }
+        // }
     }
 
     private getRandomInt(length:number):number {
