@@ -234,23 +234,25 @@ class Game extends egret.DisplayObjectContainer{
         let endY = event.stageY;
         let diffX = endX - this.startX;
         let diffY = endY - this.startY;
+        let direction = '';
         // console.log(endX,endY,this.startX,this.startY,diffX,diffY);
         switch(true){
             case Math.abs(diffX)>Math.abs(diffY)&&diffX>20 :
-                console.log('right');
+                direction ='right';
                 break;
             case Math.abs(diffX)>Math.abs(diffY)&&diffX<-20 :
-                console.log('left');
+                direction = 'left';
                 break;
             case Math.abs(diffX)<Math.abs(diffY)&&diffY>20 :
-                console.log('down');
+                direction = 'down';
                 break;
             case Math.abs(diffX)<Math.abs(diffY)&&diffY<-20 :
-                console.log('up');
+                direction = 'up';
                 break; 
             default:
                 break;            
         }
+        direction && this.move(direction);
         // if(Math.abs(diffX)>Math.abs(diffY)){
         //     if(diffX>20){
         //         console.log('right')
@@ -268,7 +270,9 @@ class Game extends egret.DisplayObjectContainer{
         //     }
         // }
     }
-
+    private move(direction){
+        console.log(direction)
+    }
     private getRandomInt(length:number):number {
     	return Math.floor(Math.random() * length) ;
 	}
