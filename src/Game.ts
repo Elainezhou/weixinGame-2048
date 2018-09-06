@@ -14,11 +14,11 @@ class Game extends egret.DisplayObjectContainer{
     private _gridBgColor:number = 0xEEE4DA;
 	private _mainBgColor:number = 0x92DAF2;
     private _stageWidth:number= 640;
-    private _grids:number[][]=[];
+    private _grids=[];
     private _x = (this._stageWidth-this._mainWidth)/2;
     private _y = 300;
     private _two_probability = 0.8;
-    private _addGridAmount = 2;
+    private _addGridAmount = 1;
     private _gridsDisplayContainer = new egret.DisplayObjectContainer();
     private startX = undefined;
     private startY = undefined;
@@ -198,8 +198,8 @@ class Game extends egret.DisplayObjectContainer{
         let info = this._gridInfo[num];
 
         let cell:egret.Sprite = new egret.Sprite()
-        cell.x = i*this._cellSize+(i+1)*this._colSize;
-        cell.y = j*this._cellSize+(j+1)*this._colSize;
+        cell.y = i*this._cellSize+(i+1)*this._colSize;
+        cell.x = j*this._cellSize+(j+1)*this._colSize;
         cell.graphics.beginFill(info.backgroundColor, 0.9)
         cell.graphics.drawRoundRect(0, 0, 
                                     this._cellSize, this._cellSize, 
@@ -239,40 +239,129 @@ class Game extends egret.DisplayObjectContainer{
         switch(true){
             case Math.abs(diffX)>Math.abs(diffY)&&diffX>20 :
                 direction ='right';
+                this.moveRight();
                 break;
             case Math.abs(diffX)>Math.abs(diffY)&&diffX<-20 :
                 direction = 'left';
+                this.moveLeft();
                 break;
             case Math.abs(diffX)<Math.abs(diffY)&&diffY>20 :
                 direction = 'down';
+                this.moveDown();
                 break;
             case Math.abs(diffX)<Math.abs(diffY)&&diffY<-20 :
                 direction = 'up';
+                this.moveUp();
                 break; 
             default:
                 break;            
         }
-        direction && this.move(direction);
-        // if(Math.abs(diffX)>Math.abs(diffY)){
-        //     if(diffX>20){
-        //         console.log('right')
-        //     }
-        //     if(diffX<-20){
-        //         console.log('left')
-        //     }
-        // }
-        // if(Math.abs(diffX)<Math.abs(diffY)){
-        //     if(diffY>20){
-        //         console.log('down')
-        //     }
-        //     if(diffY<-20){
-        //         console.log('up')
-        //     }
-        // }
+        this.addGrids();
+        this.drawGrids();
+        // direction && this.move(direction);
+        
     }
-    private move(direction){
-        console.log(direction)
+    private moveRight(){
+        // this._grids = [
+        //     [0,2,2,2],
+        //     [0,0,2,4],
+        //     [0,0,2,4],
+        //     [0,0,2,4],
+        // ]
+        
+        for(let i=0;i<this._row;i++){
+            for(let j=this._col-1;j>1;j--){
+                if(this._grids[i][j] === this._grids[i][j-1]){
+                    this._grids[i][j] *= 2;
+                    this._grids[i][j-1] = 0;
+                }
+            }
+            let nonZero = this._grids[i].filter((item)=>item !== 0);
+            
+            this._grids[i] = [...Array(this._col-nonZero.length).fill(0),...nonZero];
+            
+        }
+
+
     }
+
+    private moveLeft(){
+         for(let i=0;i<this._row;i++){
+            for(let j=0;j<this._col-1;j++){
+                if(this._grids[i][j] === this._grids[i][j+1]){
+                    this._grids[i][j] *= 2;
+                    this._grids[i][j+1] = 0;
+                }
+            }
+            let nonZero = this._grids[i].filter((item)=>item !== 0);
+            
+            this._grids[i] = [...nonZero,...Array(this._col-nonZero.length).fill(0)];
+            
+        }
+
+    }
+
+    private moveDown(){
+        let _grids = this.turn(this._grids);
+        // console.log(_grids)
+        for(let i=0;i<this._row;i++){
+            for(let j=this._col-1;j>1;j--){
+                if(_grids[i][j] === _grids[i][j-1]){
+                    _grids[i][j] *= 2;
+                    _grids[i][j-1] = 0;
+                }
+            }
+            let nonZero = _grids[i].filter((item)=>item !== 0);
+            
+            _grids[i] = [...Array(this._col-nonZero.length).fill(0),...nonZero];
+        }
+
+        _grids = this.turn(_grids);
+
+        this._grids = _grids;
+        
+
+    }
+
+    private moveUp(){
+        let _grids = this.turn(this._grids);
+        // console.log(_grids)
+        for(let i=0;i<this._row;i++){
+            for(let j=0;j<this._col-1;j++){
+                if(_grids[i][j] === _grids[i][j+1]){
+                    _grids[i][j] *= 2;
+                    _grids[i][j+1] = 0;
+                }
+            }
+            let nonZero = _grids[i].filter((item)=>item !== 0);
+            
+            _grids[i] = [...nonZero,...Array(this._col-nonZero.length).fill(0)];
+            
+        }
+
+        _grids = this.turn(_grids);
+
+        this._grids = _grids;
+
+    }
+    private turn(arr){
+        // let arr = [
+        //     [0,2,2,2],
+        //     [0,0,2,4],
+        //     [0,0,2,4],
+        //     [0,0,2,4],
+        // ]
+        let newArray = arr[0].map(function(col, i) {
+            return arr.map(function(row) {
+                return row[i];
+            })
+        });
+        return newArray;
+        //console.log(newArray)
+    }
+
+    
+
     private getRandomInt(length:number):number {
     	return Math.floor(Math.random() * length) ;
 	}
