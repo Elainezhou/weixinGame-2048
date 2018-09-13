@@ -29,11 +29,14 @@
 class Main extends egret.DisplayObjectContainer {
 
     static readonly GAME_WIDTH:number = 200;
+    private score;
+    public static instance: Main
     
 
     public constructor() {
         super();        
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
+         Main.instance = this
      
     }
 
@@ -68,88 +71,48 @@ class Main extends egret.DisplayObjectContainer {
         this.createGameScene();
         // const result = await RES.getResAsync("description_json")
         // this.startAnimation(result);
-        // await platform.login();
-        // const userInfo = await platform.getUserInfo();
-        // console.log(userInfo);
+        await platform.login();
+        const userInfo = await platform.getUserInfo();
+        await platform.showShareMenu();
+        console.log(platform);
 
     }
 
-    private async loadResource() {
-        try {
-            console.log('load');
-            const loadingView = new LoadingUI();
-            this.stage.addChild(loadingView);
-            await RES.loadConfig("resource/default.res.json", "resource/");
-            await RES.loadGroup("preload", 0, loadingView);
-            this.stage.removeChild(loadingView);
-        }
-        catch (e) {
-            console.error(e);
-        }
-    }
+    // private async loadResource() {
+    //     try {
+    //         console.log('load');
+    //         const loadingView = new LoadingUI();
+    //         this.stage.addChild(loadingView);
+    //         await RES.loadConfig("resource/default.res.json", "resource/");
+    //         await RES.loadGroup("preload", 0, loadingView);
+    //         this.stage.removeChild(loadingView);
+    //     }
+    //     catch (e) {
+    //         console.error(e);
+    //     }
+    // }
 
-    private textfield: egret.TextField;
+    //private textfield: egret.TextField;
 
     /**
      * 创建游戏场景
      * Create a game scene
      */
     private createGameScene() {
-        // let sky = this.createBitmapByName("bg_jpg");
-        // this.addChild(sky);
+        
         let stageW = this.stage.stageWidth;
         let stageH = this.stage.stageHeight;
-        // console.log(stageW,stageH);
-        // sky.width = stageW;
-        // sky.height = stageH;
+        
         this.drawBg();
+        this.drawLogo();
 
         let game = new Game();
-        this.addChild(game)
-        //this.drawLogo();
+        this.addChild(game);
 
-        // let topMask = new egret.Shape();
-        // topMask.graphics.beginFill(0x000000, 0.5);
-        // topMask.graphics.drawRect(0, 0, stageW, 172);
-        // topMask.graphics.endFill();
-        // topMask.y = 33;
-        // this.addChild(topMask);
+        this.score = new Score();
+        this.addChild(this.score);
+        //this.score.updateScore(4);
 
-        // let icon = this.createBitmapByName("egret_icon_png");
-        // this.addChild(icon);
-        // icon.x = 26;
-        // icon.y = 33;
-
-        // let line = new egret.Shape();
-        // line.graphics.lineStyle(2, 0xffffff);
-        // line.graphics.moveTo(0, 0);
-        // line.graphics.lineTo(0, 117);
-        // line.graphics.endFill();
-        // line.x = 172;
-        // line.y = 61;
-        // this.addChild(line);
-
-
-        // let colorLabel = new egret.TextField();
-        // colorLabel.textColor = 0xffffff;
-        // colorLabel.width = stageW - 172;
-        // colorLabel.textAlign = "center";
-        // colorLabel.text = "Hello Egret";
-        // colorLabel.size = 24;
-        // colorLabel.x = 172;
-        // colorLabel.y = 80;
-        // this.addChild(colorLabel);
-
-        // let textfield = new egret.TextField();
-        // this.addChild(textfield);
-        // textfield.alpha = 0;
-        // textfield.width = stageW - 172;
-        // textfield.textAlign = egret.HorizontalAlign.CENTER;
-        // textfield.size = 24;
-        // textfield.textColor = 0xffffff;
-        // textfield.x = 172;
-        // textfield.y = 135;
-        // this.textfield = textfield;
     }
 
     /**
@@ -175,16 +138,22 @@ class Main extends egret.DisplayObjectContainer {
         let textfield = new egret.TextField();       
         textfield.text = '2048';
         textfield.textColor = 0xffffff;
-        textfield.x = 50;
-        textfield.y = 50;
+        textfield.x = 70;
+        textfield.y = 100;
         // textfield.alpha = 0;
         // textfield.width = stageW - 172;
         // textfield.textAlign = egret.HorizontalAlign.CENTER;
-        textfield.size = 24;
+        textfield.size = 72;
         // this.textfield = textfield;
         this.addChild(textfield);
+       // Score.instance.updateScore(2);
 
     }
+    public updateScore(num){
+        this.score.setContent(num)
+    }
+    
+
     /**
      * 描述文件加载成功，开始播放动画
      * Description file loading is successful, start to play the animation

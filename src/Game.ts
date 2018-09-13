@@ -18,7 +18,7 @@ class Game extends egret.DisplayObjectContainer{
     private _x = (this._stageWidth-this._mainWidth)/2;
     private _y = 300;
     private _two_probability = 0.8;
-    private _addGridAmount = 1;
+    private _addGridAmount = 2;
     private _gridsDisplayContainer = new egret.DisplayObjectContainer();
     private startX = undefined;
     private startY = undefined;
@@ -139,7 +139,7 @@ class Game extends egret.DisplayObjectContainer{
 				this._grids[i][j] = 0
 			}
 		}
-        console.log(this._grids);
+        //console.log(this._grids);
     }
     private addGridsBg(){
         for(let i =0;i<this._row;i++){
@@ -173,7 +173,7 @@ class Game extends egret.DisplayObjectContainer{
             finalNeedToAddGridsCoord.push(emptyCell[index]);
             emptyCell.splice(index,1);
         }
-        console.log(finalNeedToAddGridsCoord)
+       // console.log(finalNeedToAddGridsCoord)
         finalNeedToAddGridsCoord.forEach((item)=>{
             this._grids[item.x][item.y] = this.getNewNumber();
 
@@ -258,6 +258,7 @@ class Game extends egret.DisplayObjectContainer{
         }
         this.addGrids();
         this.drawGrids();
+        this.score();
         // direction && this.move(direction);
         
     }
@@ -342,6 +343,16 @@ class Game extends egret.DisplayObjectContainer{
         _grids = this.turn(_grids);
 
         this._grids = _grids;
+
+    }
+    private score(){
+        let sum = 0;
+        for(let i =0;i<this._row;i++){
+            for(let j=0;j<this._col;j++){
+                sum+=this._grids[i][j];
+            }
+        }
+        Main.instance.updateScore(sum);
 
     }
     private turn(arr){
